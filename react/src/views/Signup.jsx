@@ -9,11 +9,19 @@ export default function Example() {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState({__html: ''});
+  const [message, setMessage] = useState('');
 
   const onSubmit = (ev) => {
     ev.preventDefault();
     setError({ __html: ''})
 
+    if(password != passwordConfirmation) {
+      console.log('Password does not match');
+      setMessage('Confirm Password does not match');
+    }
+    else {
+
+    
     axiosClient.post('/signup', {
       name: fullName,
       email,
@@ -31,6 +39,7 @@ export default function Example() {
         }
         console.error(error)
       });
+    }
   } 
 
   return (
@@ -52,7 +61,9 @@ export default function Example() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-
+        
+       { message && (<div className='bg-red-500 rounded py-2 px-3 text-white' >{message}</div>)}
+        
         {error.__html && (
         <div className='bg-red-500 rounded py-2 px-3 text-white' dangerouslySetInnerHTML={error}></div>
         )}
@@ -126,7 +137,7 @@ export default function Example() {
             <div>
               <div className="flex items-center justify-between">
                 <label htmlFor="password-confirmation" className="block text-sm font-medium  text-gray-900">
-                  Confirm Password
+                  Confirm Password 
                 </label>
                 
               </div>
