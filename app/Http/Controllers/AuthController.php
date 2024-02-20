@@ -12,15 +12,17 @@ class AuthController extends Controller
 {
     public function signup(SignupRequest $request)
     {
-        $data = $request->validated();
 
+      
+        
         /** @var \App\Models\User $user */
-        $user = User::create([
+        $data = $request->validated();
+            $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ]);
-        $token = $user->createToken('main')->plainTextToken;
+        $token = $user->createToken('authToken')->plainTextToken;
 
         return response([
             'user' => $user,
@@ -41,7 +43,7 @@ class AuthController extends Controller
             ], 422);
         }
         $user = Auth::user();
-        $token = $user->createToken('main')->plainTextToken;
+        $token = $user->createToken('authToken')->plainTextToken;
 
         return response([
             'user' => $user,
