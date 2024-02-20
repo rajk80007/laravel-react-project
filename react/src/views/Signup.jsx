@@ -30,6 +30,7 @@ export default function Example() {
     })
       .then(({data}) =>{
         console.log(data);
+        setMessage(data.message);
       })
       .catch((error) =>{
         if(error.response){
