@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 const axiosClient = axios.create({
-    baseURL: `http://localhost:8000/api`,
+    baseURL: `${VITE_API_BASE_URL}/api`,
 })
 
 axiosClient.interceptors.request.use((config)=> {
     const token = '123'; //TODO
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers.Authorization = `Bearer ${localStorage.getItem('TOKEN')}`
     return config
 
 });

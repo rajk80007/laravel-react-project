@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import {Link} from 'react-router-dom'
 import axiosClient from '../views/axios'
+import { useStateContext } from '../contexts/ContextProvider';
 
-export default function Example() {
+export default function Signup() {
+
+  const {setCurrentUser, setUserToken} = useStateContext();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,7 +32,8 @@ export default function Example() {
       password_confirmation: passwordConfirmation
     })
       .then(({data}) =>{
-        console.log(data);
+        setCurrentUser(data.user);
+        setUserToken(data.token);
         setMessage(data.message);
       })
       .catch((error) =>{
@@ -63,7 +67,7 @@ export default function Example() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         
-       { message && (<div className='bg-red-500 rounded py-2 px-3 text-white' >{message}</div>)}
+       { message && (<div className='bg-green-500 rounded py-2 px-3 text-white' >{message}</div>)}
         
         {error.__html && (
         <div className='bg-red-500 rounded py-2 px-3 text-white' dangerouslySetInnerHTML={error}></div>
@@ -79,7 +83,7 @@ export default function Example() {
               <label htmlFor="full-name" className="block text-sm font-medium text-gray-900">
                 Full Name
               </label>
-              {fullName}
+             
               <div className="">
                 <input
                   id="full-name"

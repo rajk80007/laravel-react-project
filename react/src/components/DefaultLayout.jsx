@@ -1,8 +1,10 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, BellIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, NavLink, Navigate, Outlet } from 'react-router-dom'
 import { useStateContext } from '../contexts/ContextProvider'
+import axios from 'axios'
+import axiosClient from '../views/axios'
 
 
 
@@ -20,7 +22,7 @@ function classNames(...classes) {
 
 export default function DefaultLayout() {
 
-  const { currentUser, userToken } = useStateContext();
+  const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext();
 
   if(!userToken) {
     return <Navigate to = 'login' />
@@ -28,7 +30,10 @@ export default function DefaultLayout() {
 
   const logout = (ev) =>{
     ev.preventDefault();
-    console.log("Logout");
+    axiosClient.post('/logout').then(res=> {
+      setCurrentUser({});
+      setUserToken(null); 
+    });
   }
   return (
     <>
@@ -91,7 +96,7 @@ export default function DefaultLayout() {
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            <img className="h-8 w-8 rounded-full" src="#" alt="" />
+                            <UserIcon className="h-8 w-8 rounded-full" src="#" alt="" />
                           </Menu.Button>
                         </div>
                         <Transition
