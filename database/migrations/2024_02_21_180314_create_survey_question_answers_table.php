@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('survey_question_answers', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class, 'survey_question_id');
+            $table->foreignIdFor(\App\Models\User::class, 'survey_answer_id');
+            $table->text('answer')->nullable();
             $table->timestamps();
         });
     }

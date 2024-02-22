@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class, 'user_id');
+            $table->string('image', 255)->nullable();
+            $table->string('title', 1000)->nullable();
+            $table->string('slug', 1000)->nullable();
+            $table->date('expire_date')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

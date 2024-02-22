@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('survey_questions', function (Blueprint $table) {
             $table->id();
+            $table->string('type', 45)->nullable();
+            $table->string('question', 2000)->nullable();
+            $table->string('description')->nullable();
+            $table->string('data')->nullable();
+            $table->foreignId(\App\Models\Survey::class, 'survey_id');
             $table->timestamps();
         });
     }
