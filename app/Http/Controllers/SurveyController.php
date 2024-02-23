@@ -32,6 +32,9 @@ class SurveyController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @param \App\Http\Requests\SurveyStoreRequest $request
+     * @return \Illuminate\Http\Response
      */
     public function store(SurveyStoreRequest $request)
     {
@@ -46,10 +49,10 @@ class SurveyController extends Controller
 
         $survey = Survey::create($data);
         // Create new questions
-        // foreach($data['questions'] as $question){
-        //     $question['survey_id'] = $survey->id;
-        //     $this->createQuestion($question);
-        // }
+        foreach($data['questions'] as $question){
+            $question['survey_id'] = $survey->id;
+            $this->createQuestion($question);
+        }
         return new SurveyResource($survey);
 
         // $user = $request->user();
@@ -59,6 +62,9 @@ class SurveyController extends Controller
 
     /**
      * Display the specified resource.
+     * 
+     * @param  \App\Models\Survey  $survey
+     * @return \Illuminate\Http\Response
      */
     public function show(Survey $survey, Request $request)
     {
@@ -71,6 +77,10 @@ class SurveyController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * 
+     * @param  \App\Http\Requests\SurveyUpdateRequest  $request
+     * @param  \App\Models\Survey  $survey
+     * @return \Illuminate\Http\Response
      */
     public function update(SurveyUpdateRequest $request, Survey $survey)
     {
@@ -170,6 +180,10 @@ class SurveyController extends Controller
             $image = str_replace(' ', '+', $image);
             $image = base64_decode($image);
             // Image is a valid base64 string
+
+            if($image === false){
+                throw new \Exception('base64_decode failed');
+            }
         } else {
             throw new \Exception('Invalid base64 image format');
         }
@@ -182,10 +196,11 @@ class SurveyController extends Controller
             File::makeDirectory($absolutePath, 0755, true);
         }
         file_put_contents($relativePath, $image);
-        // return $relativePath;
+        return $relativePath;
     }
 
     /**
+     * Create a new question and return
      * 
      * @param $data
      * @return mixed

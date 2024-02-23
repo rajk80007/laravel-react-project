@@ -3,8 +3,10 @@ import PageComponent from '../components/PageComponent'
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import TButton from '../components/core/TButton';
 import axiosClient from './axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function SurveyView() {
+    const navigate = useNavigate();
 
     const [survey, setSurvey] = useState({
         title: "",
@@ -17,26 +19,55 @@ export default function SurveyView() {
         questions: [],
     });
 
-    const onImageChoose = () => {
+    const [errorMessage, setErrorMessage] = useState('');
 
+    const onImageChoose = (ev) => {
+        const file = ev.target.files[0];
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSurvey({
+                ...survey,
+                image: file,
+                image_url: reader.result
+            })
+            ev.target.value = "";
+        }
+        reader.readAsDataURL(file);
     }
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-        axiosClient.post('/survey', {
-            title: 'Lorem Ipsum',
-            description: 'Test',
-            // expire_date: '11-4-2024',
-            status: true,
-            // questions: []
+        
+        const payload = {...survey};
+        if(payload.image) {
+            payload.image = payload.image_url;
+        }
+        delete payload.image_url;
+        axiosClient.post('/survey', payload).then((res) => {
+            console.log(res);
+            navigate('/surveys');
         })
-    }
+        .catch((err) => {
+            if(err && err.response) {
+                const error = err.response.data.message;
+                setErrorMessage(error);
+            }
+            console.log(err);
+        });
+    };
 
   return (
     <PageComponent title='Create New Survey'>
         <form action="#" method='POST' onSubmit={onSubmit}>
             <div className='shadow sm:overflow-hidden sm:rounded-md'>
                 {/* Image */}
+
+                {errorMessage && <div className='bg-red-500 text-white px-4 py-3 sm:p-4'>
+                    {errorMessage}
+
+                </div>}
+
                 <div>
                     <label htmlFor="" className='block text-sm font-medium text-gray-700'>
                         Photo
@@ -146,7 +177,7 @@ export default function SurveyView() {
                         name='status'
                         checked = {survey.status}
                         onChange={(ev) => 
-                            setSurvey({...survey, status: ev.target.value})
+                            setSurvey({...survey, status: ev.target.checked})
                         }
                         className='h-4 w-4 rounded border-gray-300 text-indigo-600 focus:indigo-500'                         
                         />

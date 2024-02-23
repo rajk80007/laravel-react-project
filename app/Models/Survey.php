@@ -18,6 +18,8 @@ class Survey extends Model
         'created_at',
         'updated_at',
         'user_id',
+        'status',
+        'expire_date',
         'description',
     ];
 
